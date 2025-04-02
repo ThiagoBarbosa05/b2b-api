@@ -14,14 +14,26 @@ interface CreateContactRequest {
   LegalName: string
   Email: string
   StreetAddressNumber: string
+  StreetAddress: string
   TypeId: number
   Phones: {
     PhoneNumber: string
   }[]
   OtherProperties: {
     FieldKey: string
-    StringValue: string
+    ObjectValueId?: number
+    IntegerValue?: number
   }[]
+}
+
+interface CreateContactResponse {
+  Id: number
+}
+
+interface CreateTaskRequest {
+  Title: string
+  Description: string
+  ContactId: number | undefined
 }
 
 export class PloomesService {
@@ -48,8 +60,10 @@ export class PloomesService {
     return response.data.value[0]
   }
 
-  async createContact(contact: CreateContactRequest) {
-    await ploomesApi.post(
+  async createContact(
+    contact: CreateContactRequest,
+  ): Promise<CreateContactResponse> {
+    const response = await ploomesApi.post(
       `/Contacts`,
       { ...contact, ZipCode: this.formatZipCode(contact.ZipCode) },
       {
@@ -58,6 +72,20 @@ export class PloomesService {
         },
       },
     )
+
+    return {
+      Id: response.data.value[0].Id,
+    }
+  }
+
+  async createTask(task: CreateTaskRequest) {
+    const response = await ploomesApi.post('/Tasks', task, {
+      headers: {
+        'User-Key': this.userKey,
+      },
+    })
+
+    console.log(response.data)
   }
 
   private formatZipCode(zipCode: string): number {

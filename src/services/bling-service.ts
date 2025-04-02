@@ -29,8 +29,8 @@ export class BlingService {
   }
 
   async listNfes(): Promise<Nfe[]> {
-    const startOfDay = dayjs.utc().local().startOf('day')
-    const endOfDay = dayjs.utc().local().endOf('day')
+    const startOfDay = dayjs.utc().local().startOf('day').subtract(7, 'day')
+    const endOfDay = dayjs.utc().local().endOf('day').subtract(7, 'day')
     const { access_token } = await this.authFactory.getStoredToken()
 
     const response = await blingApi.get<GetNfeApiResponse>(

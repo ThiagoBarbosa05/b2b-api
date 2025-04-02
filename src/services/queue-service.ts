@@ -37,6 +37,9 @@ export class QueueService {
   async receiveMessage(): Promise<Message[] | undefined> {
     const command = new ReceiveMessageCommand({
       QueueUrl: this.queueUrl,
+      MaxNumberOfMessages: 10,
+      WaitTimeSeconds: 5,
+      VisibilityTimeout: 30,
     })
     const response = await this.client.send(command)
 
